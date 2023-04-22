@@ -1,0 +1,21 @@
+1. SELECT * FROM сотрудники WHERE заработная_плата = (SELECT MAX(заработная_плата) FROM сотрудники);
+
+2. WITH RECURSIVE cte (id, руководитель_id, глубина) AS (
+        SELECT id, руководитель_id, 1
+        FROM сотрудники
+        WHERE руководитель_id IS NULL
+        UNION ALL
+        SELECT сотрудники.id, сотрудники.руководитель_id, cte.глубина + 1
+        FROM сотрудники
+        JOIN cte ON сотрудники.руководитель_id = cte.id
+    )
+    SELECT MAX(глубина) FROM cte;
+
+3. SELECT подразделение.название, SUM(сотрудники.заработная_плата) AS сумма_зарплат
+   FROM подразделение
+   JOIN сотрудники ON подразделение.id = сотрудники.подразделение_id
+   GROUP BY подразделение.название
+   ORDER BY сумма_зарплат DESC
+   LIMIT 1;
+
+4. SELECT * FROM сотрудники WHERE имя LIKE 'Р%н';
